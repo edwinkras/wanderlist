@@ -1,5 +1,5 @@
 import PlaceCard from "@/components/PlaceCard";
-import { ScrollView, Text, View, Button, StyleSheet } from "react-native";
+import { ScrollView, Text, View, Button, StyleSheet, Image } from "react-native";
 
 export default function Index() {
   return (
@@ -13,8 +13,7 @@ export default function Index() {
         category="Food"
         notes="Pasteisi de nata tour"
       />
-
-
+      <Image source={require('wanderlist/assets/images/Portrait.cloud.webp')}/>
       <Button // wow, this is really cool
         title="Press Me"
         onPress={() => window.alert('Simple Button pressed')}
@@ -22,8 +21,11 @@ export default function Index() {
       />
     </ScrollView>
   )
+  // the image worked
 }
 
+// Did this before doing the "Go further" section. 
+// Will try more on it when I have time again!
 function Header() {
   return (
     <View style={styles.header}>
