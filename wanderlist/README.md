@@ -1,5 +1,7 @@
 GITHUB LINK !!! : https://github.com/edwinkras/wanderlist.git
 
+<!-- Week 2 checkpoint, 2026-07-27 -->
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
