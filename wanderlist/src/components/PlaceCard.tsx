@@ -1,15 +1,7 @@
 import { StyleSheet, Text, View, Button } from "react-native";
+import { Place } from "@/lib/types"
 
-type PlaceCardPros = {
-    name: string;
-    category: string;
-    notes: string;
-};
-
-// the way this works is, we basically have a method that does the job for us
-// its like how in java, you can have a method to do all of the repeating steps
-
-export default function PlaceCard({ name, category, notes }: PlaceCardPros) {
+export default function PlaceCard({name, category, notes}: Place) {
     return (
         <View>
             <View style={styles.card}>
@@ -41,31 +33,6 @@ const styles = StyleSheet.create({
         borderRadius: 12, // the roundness of the border or the box the text is in
         backgroundColor: "#ccc1c1", // background of the little rectangles in a way
         padding: 16, // gives sapce ebtween each content (each line)
+        boxShadow: '3.5px 5px 3px 1px #000000' // small border shadow with small blur
     }
-
-    // my custom settings I've made before seeing the "Mkaing it look like a card" slide in Slides file from Week 2 (github)
-    // field: {
-    //     backgroundColor: "gray", // the background color as asked in the github file instructions
-    //     borderRadius: 7, // puts a little round border around the lines
-    //     padding: 10,
-    //     flexDirection: "row", // makes it go line by line with "Name: Place" instead of doing line breaks after EACH word
-    //     justifyContent: "space-between" // makes it have a space between the two
-    //     // (the labels are on left, the actual names/words are on the right)
-    // }
-
-    // by using the one shown on the slides
-    // card: {
-    //     flexDirection: "row", // this does A LOT for the position of the cards, makes it actually understandable cuz it connects them together in a way
-    //     backgroundColor: "#fff",
-    //     borderRadius: 12,
-    //     padding: 16,
-    //     elevation: 2,
-    //     shadowColor: "#000",
-    //     shadowOpacity: 0.1,
-    //     shadowRadius: 6,
-    //     gap: 5
-    // },
-
-    // I didn't do cardHeader yet as I didn't know what to add for style, 
-    // I'm sorry about that
 });

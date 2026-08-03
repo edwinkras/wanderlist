@@ -1,4 +1,4 @@
-export type PlaceCardProps = {
+export type Place = {
     id: string;
     name: string;
     notes: string;

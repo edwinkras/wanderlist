@@ -1,6 +1,7 @@
 import PlaceCard from "@/components/PlaceCard";
 import { ScrollView, Text, View, Button, StyleSheet, Image, TextInput } from "react-native";
 import { useState } from "react"; // only way it worked
+import { Place } from "@/lib/types";
 
 export default function Index() {
   // Variable
@@ -10,50 +11,67 @@ export default function Index() {
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
   const [category, setCategory] = useState("");
-  const [places, setPlaces] = useState([]);
-  const [errors, setErrors] = useState({}); // you can put any symbol between useState() '
+
+  const [places, setPlaces] = useState<Place[]>([]);
+
+  type FormErrors = {
+    name?: string;
+    notes?: string;
+    category?: string;
+  }
+  const [errors, setErrors] = useState<FormErrors>({}); // you can put any symbol between useState() '
   // (that's good to know)
 
-  type Place = {
-    id: string;
-    name: string;
-    notes: string;
-    category: "city" | "nature" | "food" | "other";
+  const clearForm = () => {
+    setName("");
+    setNotes("");
+    setCategory("");
   }
 
-  const addPlace = (place) => {
+  const addPlace = () => {
+    if (!validate()) return;
+
+    // Define the new Place Object to be added
+    const newPlace: Place = {
+      id: Date.now().toString(),
+      name: name.trim(), // name : name
+      notes: notes.trim(), // notes: notes
+      category: category.trim().toLocaleLowerCase() as Place["category"], // category: category
+      // the reason we did that ISSS because the types has different features/words for the category shit
+
+    }
+
+    console.log("Before: ", places);
+
     // Setter
     setPlaces([
-      // Load all places from Reat State
       ...places,
-
-      // Define the new Place object to be added
-      {
-        id: Date.now().toString(),
-        name, // name : name
-        notes, // notes: notes
-        category, // category: category
-
-      },
-
+      newPlace,
     ]);
+
+    console.log("After: ", places);
+
+    clearForm();
 
     // this is a dev tool
     // to debug (check for issues or for general output to help a dev)
     // console.log(places) // it works now
   };
 
-  // function validate() {
-  //   const next = {};
-  //   if (!name.trim()) next.name = "Name is required";
-  //   if (!notes.trim()) next.notes = "Notes can't be empty";
-  //   const allowed = ["city", "nature", "food", "other"];
-  //   if (!allowed.includes(category.trim().toLowerCase())) {
-  //     next.category = `Category must be one of: ${allowed.join(", ")}. `;
-  //   }
-  //   setErrors(next);
-  //   return Object.keys(next).length === 0;
-  // }
+  function validate() {
+    const next: FormErrors = {};
+
+    if (!name.trim()) next.name = "Name is required";
+    if (!notes.trim()) next.notes = "Notes can't be empty";
+
+    const allowed = ["city", "nature", "food", "other"];
+    if (!allowed.includes(category.trim().toLowerCase())) {
+      next.category = `Category must be one of: ${allowed.join(", ")}. `;
+    }
+
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
 
   return (
     // it works, I wouldn't know how to do it without being told how to set up the scroll feature
@@ -63,74 +81,54 @@ export default function Index() {
         source={{
           uri: "https://images.contentstack.io/v3/assets/blt06f605a34f1194ff/blt5f5d481d420b4802/64e0b6237b637534f74167cb/0_-_BCC-2023-BERLIN-LANDMARKS-0.webp?fit=crop&auto=webp&quality=60&crop=smart&format=avif"
         }}
-        style={{ width: 380, height: 200, borderRadius: 15}}
+        style={{ width: 380, height: 200, borderRadius: 15 }}
       />
-      <PlaceCard name="Kyoto" category="City" notes="Temples in autumn" />
+      {/* if category had "City" instead of "city", it would throw an error/red line due to us already putting the words 
+      that can count for category (in types.ts which is connected to PlaceCard.tsx)*/}
+      {/* no need for this anymore as now we can our own information/ideas/words */}
+      {/* <PlaceCard id="123" name="Kyoto" category="city" notes="Temples in autumn" /> */}
+
+      {places.map((placeObject) => (
+        <PlaceCard
+          key={placeObject.id} // this IS for the id of the map/key itself
+          id={placeObject.id} // this one IS for the id, for the Place (the type)
+          name={placeObject.name}
+          notes={placeObject.notes}
+          category={placeObject.category}
+        />
+      ))
+      }
       <TextInput value={name} onChangeText={setName} placeholder="Name" />
+
+      {
+        errors.name && (
+          <Text style={{ color: "red" }}>{errors.name}</Text>
+        )
+      }
+
       <TextInput
         value={notes}
         onChangeText={setNotes}
         placeholder={"Notes"} />
+
+      {
+        errors.notes && (
+          <Text style={{ color: "red" }}>{errors.notes}</Text>
+        )
+      }
       <TextInput
         value={category}
         onChangeText={setCategory}
         placeholder={"Category"} />
-      {/* <PlaceCard name="Banff" category="Nature" notes="Food" />
-      <PlaceCard
-        name="Lisbon"
-        category="Food"
-        notes="Pasteisi de nata tour"
-      /> */}
-      {/* <Image source={require('wanderlist/assets/images/Portrait.cloud.webp')} /> */}
+
+      {
+        errors.category && (
+          <Text style={{ color: "red" }}>{errors.category}</Text>
+        )
+      }
 
       <Button title="Add a place" onPress={addPlace} />
-
-      {/* and THISSSS, geos for an output into the bottom of the screen, as a line everytime the ADD Button is pressed */}
-      {places.map((placeObject) => (
-        <Text key={placeObject.id}>
-          {placeObject.name} - {placeObject.category}
-        </Text>
-      ))}
-      {/* <Button
-        title="Add a place"
-        onPress={() => {
-          setPlaces([
-            // Load all places from Reat State
-            ...places, // I challenge you to remove this and test
-
-            // Define the new Place Object to be added
-            {
-              id: Date.now().toString(),
-              name, // name: name,
-              notes, // notes: notes,
-              category, //category: category
-            },
-          ]);
-        }} /> */}
-
-      {/*Adda button here:) */}
-      {/* it works*/}
-      {/* <Button
-        title={`Count: ${count}`}
-        onPress={() => {
-          setCount(count + 1)
-        }} /> */}
-
-      {/* works well*/}
-      {/* <Button
-        title="Reset"
-        onPress={() => setCount(0)} /> */}
-      {/* Title = count var, event counter++ */}
-
-      {/* <TextInput value={name}
-        onChangeText={setName}
-        placeholder="Hello text input : ) " /> */}
-
-      {/* <Button // wow, this is really cool
-        title="Press Me"
-        onPress={() => window.alert('Simple Button pressed')}
-      // didn't think an actual window would open */}
-    </ScrollView>
+    </ScrollView >
   )
   // the image worked
 }
@@ -149,7 +147,7 @@ function Header() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingVertical: 68, // I changed it to make it look cleaner 
+    paddingVertical: 30, // I changed it to make it look cleaner 
     // (and not stuck to the camera layout on the emulator)
     alignItems: "center"
   },
